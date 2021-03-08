@@ -1,1 +1,33 @@
-/* No CSS *//*# sourceMappingURL=main.css.map */
+body {
+  background-color: #ffffff;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: bold;
+  color: #272d2f;
+}
+
+.navbar-brand img {
+  max-height: 30px;
+  max-width: 240px;
+}
+
+.btn-login {
+  border: 1px solid #272d2f;
+  color: #272d2f;
+  font-weight: bold;
+}
+
+.btn-login:hover {
+  background-color: #f8f8f8;
+}
+
+.btn-register {
+  background-color: #fe724c;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.btn-register:hover {
+  background-color: #ee6b47;
+  color: #ffffff;
+}
+/*# sourceMappingURL=main.css.map */
