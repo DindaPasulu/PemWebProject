@@ -1,74 +1,33 @@
 body {
-    background-color: #ffffff;
-    font-family: 'Nunito Sans', sans-serif;
-    font-weight: bold;
-    color: #272d2f;
+  background-color: #ffffff;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: bold;
+  color: #272d2f;
 }
 
 .navbar-brand img {
-    max-height: 30px;
-    max-width: 240px;
+  max-height: 30px;
+  max-width: 240px;
 }
 
 .btn-login {
-    border: 1px solid #272d2f;
-    color: #272d2f;
-    font-weight: bold;
+  border: 1px solid #272d2f;
+  color: #272d2f;
+  font-weight: bold;
 }
 
 .btn-login:hover {
-    background-color: #f8f8f8;
+  background-color: #f8f8f8;
 }
 
 .btn-register {
-    background-color: #fe724c;
-    color: #ffffff;
-    font-weight: bold;
+  background-color: #fe724c;
+  color: #ffffff;
+  font-weight: bold;
 }
 
 .btn-register:hover {
-    background-color: #ee6b47;
-    color: #ffffff;
+  background-color: #ee6b47;
+  color: #ffffff;
 }
-
-.menu {
-    text-align: center;
-    text-transform: uppercase;
-    background-color: tomato;
-    color: white;
-    margin: 20px;
-    padding: 15px;
-}
-
-.card {
-    text-align: center;
-    display: inline-block;
-    position: relative;
-    border-radius: 15px;
-    padding: 32px 24px;
-    margin: 20px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-    transition: 0.3s;
-    width: 15%;
-}
-
-.card:hover {
-    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
-}
-
-.btn {
-    display: block;
-    background: tomato;
-    color: white;
-    padding: 2px 5px;
-    margin: 5px 0;
-    border-radius: 5px;
-    box-shadow: rgba(0, 0, 0, 0.9);
-    transition: all 200ms ease-in-out;
-    text-decoration: none;
-}
-
-.img {}
-
-
 /*# sourceMappingURL=main.css.map */
