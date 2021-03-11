@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 11 Mar 2021 pada 10.38
+-- Waktu pembuatan: 11 Mar 2021 pada 14.06
 -- Versi server: 10.4.6-MariaDB
 -- Versi PHP: 7.3.9
 
@@ -52,6 +52,7 @@ CREATE TABLE `customers` (
   `id_cust` int(5) UNSIGNED NOT NULL,
   `first_name` varchar(50) NOT NULL,
   `last_name` varchar(50) NOT NULL,
+  `birth_date` date NOT NULL,
   `email_cust` varchar(100) NOT NULL,
   `pass_cust` varchar(255) NOT NULL,
   `gender` varchar(10) NOT NULL
