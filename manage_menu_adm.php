@@ -83,18 +83,18 @@
                     require_once "config.php";
                     
                     // Attempt select query execution
-                    $query = "SELECT * FROM menu";
+                    $query = "SELECT * FROM menu ORDER BY 1 ASC;";
                     if($result = $mysqli -> query($query)){
                         if($row_count = $result->num_rows > 0){
                             echo "<table id='example' class='table table-bordered table-hover'>";
                                 echo "<thead>";
                                     echo "<tr>";
                                         echo "<th>ID</th>";
-                                        //echo "<th>Picture</th>";
                                         echo "<th>Title</th>";
                                         echo "<th>Category</th>";
                                         echo "<th>Price</th>";
                                         echo "<th>Description</th>";
+                                        echo "<th>Picture</th>";
                                         echo "<th>Action</th>";
                                     echo "</tr>";
                                 echo "</thead>";
@@ -102,14 +102,13 @@
                                 while($row = $result->fetch_array()){
                                     echo "<tr>";
                                         echo "<td>" . $row['id_menu'] . "</td>";
-                                        //echo "<td>" . $row['id_img'] . "</td>";
                                         echo "<td>" . $row['title'] . "</td>";
                                         echo "<td>" . $row['category'] . "</td>";
                                         echo "<td>" . $row['price'] . "</td>";
                                         echo "<td>" . $row['description'] . "</td>";
+                                        echo "<td>" . $row['img'] . "</td>";
                                         echo "<td>";
-                                            echo "<span class='glyphicon glyphicon-eye-open'></span></a>";
-                                            echo "<span class='glyphicon glyphicon-pencil'></span></a>";
+                                            echo "<a href='update_menu.php?id=". $row['id_menu'] ."' title='Update Record'><i class='fa fa-edit'></i><a>";
                                             echo "<a href='delete_menu.php?id=". $row['id_menu'] ."' title='Delete Record'><i class='fa fa-trash fa-lg'></i><a>";
                                         echo "</td>";
                                     echo "</tr>";

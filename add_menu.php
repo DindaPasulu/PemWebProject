@@ -1,102 +1,64 @@
 <?php
 // Include config file
 require_once "config.php";
- 
-// Define variables and initialize with empty values
-$title = $price = $category = $description = $id = $img = "";
-$title_err = $price_err = $category_err = $description_err = $id_err = $img_err = "";
- 
-// Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    // Validate Title
-    $input_title = trim($_POST["title"]);
-    if (empty($input_title)) {
-        $title_err = "Title is required";
-      } else {
-        $title = test_input($_POST["title"]);
-        // check if name only contains letters and whitespace
-        if (!preg_match("/^[a-zA-Z-' ]*$/",$title)) {
-          $title = "Only letters and white space allowed";
-        }
-      }
-    //Validate category
-    $input_category = trim($_POST["category"]);
-    if (empty($input_title)) {
-        $category_err = "Please fill the category";
-      } else {
-        $category = test_input($_POST["category"]);
-      }
+if(isset($_POST['add_menu'])){
+    $title = $_POST['title'];
+    $price = $_POST['price'];
+    $category = $_POST['category'];
+    $description = $_POST['description'];
+    //$gambar = file($_POST['gambar']);
 
-    //Validate Description
-    $input_desc = trim($_POST["description"]);
-    if (empty($input_desc)) {
-        $description_err = "Please fill the description";
-      } else {
-        $description = test_input($_POST["description"]);
-      }
-    
-      //Validate Price
-    $input_price = trim($_POST["price"]);
-    if (empty($input_price)) {
-        $price_err = "Please fill the price";
-      } else {
-        $price = test_input($_POST["price"]);
-      }
+    $direktori = "images/";  
 
-    // Validate id
-    $input_id = trim($_POST["id_menu"]);
-    if(empty($input_id)) {
-        $id_err = "Please enter the id";     
-    } else{
-        $id_err = "Please enter a positive integer value.";
+    $tmp_name = $_FILES["images"]["tmp_name"];
+    $name = pathinfo($_FILES["images"]["name"], PATHINFO_EXTENSION);
+    $nama_baru = $_POST['title'].".".$name;
+    move_uploaded_file($tmp_name, $direktori."/".$nama_baru);
+    $gambar = $nama_baru;
+
+    $query_tambah_masakan = "INSERT INTO menu VALUES ('','$title','$price','$category','$description','$gambar')";
+    $sql_tambah_masakan= mysqli_query($mysqli, $query_tambah_masakan);
+    if($sql_tambah_masakan){
+    if(isset($_REQUEST['batal_menu'])){
+    //echo $_REQUEST['hapus_menu'];
+    if(isset($_SESSION['edit_menu'])){
+      unset($_SESSION['edit_menu']);
+    }
+  }
+
+  if(isset($_POST['ubah_menu'])){
+    $title = $_POST['title'];
+    $price = $_POST['price'];
+    $category = $_POST['category'];
+    $description = $_POST['description'];
+    $gbr = $_FILES["gambar"]["name"];
+
+    $query_ubah_masakan = "UPDATE menu SET title = '$title', price = '$price', category = '$category', description = '$description' WHERE id_menu = '$id_masakan'";;
+    $sql_ubah_masakan = mysqli_query($conn, $query_ubah_masakan);
+
+    //$gambar = file($_POST['gambar']);
+    if($gbr != "" || $gbr != null){
+      $direktori = "gambar/";  
+
+      $tmp_name = $_FILES["images"]["tmp_name"];
+      $name = pathinfo($_FILES["images"]["name"], PATHINFO_EXTENSION);
+      $nama_baru = $_POST['title'].".".$name;
+      unlink('images/'.$gambar_masakan);
+      move_uploaded_file($tmp_name, $direktori."/".$nama_baru);
+      $gambar = $nama_baru;
+
+      $query_ubah_gambar = "UPDATE menu SET img = '$gambar' WHERE id_menu = '$id_masakan'";;
+      $sql_ubah_gambar = mysqli_query($mysqli, $query_ubah_gambar);
     }
 
-    // Validate img
-    $input_img = trim($_POST["img"]);
-    if(empty($input_img)) {
-        $img_err = "Please upload the image";     
-    } else{
-        $img_err = "Image is required";
+    if($sql_ubah_masakan){
+      unset($_SESSION['edit_menu']);
     }
-
-    // Check input errors before inserting in database
-    if(empty($title_err) && empty($category_err) && empty($description_err) && empty($price_err) && empty($img_err) && empty($id_err)) 
-    {
-        // Prepare an insert statement
-        $query = "INSERT INTO menu (title, category, description, price, img, id_menu) VALUES (?, ?, ?, ?, ?, ?)";
-         
-        if($stmt = mysqli_prepare($mysqli, $query)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ssssss", $param_title, $param_category, $param_desc, $param_price, $param_img, $param_id);
-            
-            // Set parameters
-            $param_title = $title;
-            $param_category = $category;
-            $param_desc = $description;
-            $param_price = $price;
-            $param_img = $img;
-            $param_id = $id;
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Records created successfully. Redirect to landing page
-                header("location: index_adm.php");
-                exit();
-            } else{
-                echo "Something went wrong. Please try again later.";
-            }
-        }
-         
-        // Close statement
-        $stmt -> close();
-    }
-    
-    // Close connection
-    $mysqli -> close();
-}
+  }
 ?>
  
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -112,6 +74,29 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         }
         .error {color: #FF0000;}
     </style>
+    <script type="text/javascript">
+    function preview(gambar,idpreview){
+    var gb = gambar.files;
+    for (var i = 0; i < gb.length; i++){
+      var gbPreview = gb[i];
+      var imageType = /image.*/;
+      var preview=document.getElementById(idpreview);            
+      var reader = new FileReader();
+      if (gbPreview.type.match(imageType)) {
+        preview.file = gbPreview;
+        reader.onload = (function(element) { 
+          return function(e) { 
+            element.src = e.target.result; 
+          }; 
+        })(preview);
+        reader.readAsDataURL(gbPreview);
+        } else{
+          alert("Type file tidak sesuai. Khusus image.");
+        }
+                   
+        }    
+    }
+    </script>
     <header>
     <nav class="row navbar navbar-expand-md navbar-light bg-white">
             <a href="#" class="navbar-brand">
@@ -166,41 +151,63 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </div>
                     <!--<p>Please fill this form and submit to add student record to the database.</p>-->
                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-                        <div class="form-group <?php echo (!empty($id_err)) ? 'has-error' : ''; ?>">
-                            <label>ID</label>
-                            <input type="text" name="ID" pattern=".{3,}" title="Max 3 char" class="form-control" 
-                            value="<?php echo $id; ?>">
-                            <span class="error"><?php echo $id_err;?></span>
+                        <div class="control-group">
+                            <label class="control-label">Nama Masakan:</label>
+                            <div class="controls">
+                            <?php 
+                                if(isset($_SESSION['edit_menu'])){
+                            ?>
+                            <input name="" type="text" value="<?php echo $title; ?>" class="span11" placeholder="Nama Masakan" disabled=""/>
+                            <input name="nama_masakan" type="hidden" value="<?php echo $title; ?>" class="span11" placeholder="Nama Masakan"/>
+                            <?php
+                                } else {
+                            ?>
+                            <input name="nama_masakan" type="text" value="" class="span11" placeholder="Nama Masakan"/>
+                            <?php
+                            }
+                            ?>
+                            </div>
                         </div>
-                        <div class="form-group <?php echo (!empty($img_err)) ? 'has-error' : ''; ?>">
-                            <label>Image File</label>
-                            <input type="file" name="jpg_file" class="form-control"value="<?php echo $img; ?>">
+                        <div class="control-group">
+                            <label class="control-label">Harga / Porsi :</label>
+                            <div class="controls">
+                            <input name="harga" type="text" value="<?php echo $harga; ?>" class="span11" placeholder="Rupiah" />
+                            </div>
                         </div>
-                        <div class="form-group <?php echo (!empty($title_err)) ? 'has-error' : ''; ?>">
-                            <label>Title</label>
-                            <input type="text" name="Title" class="form-control" value="<?php echo $title; ?>">
-                            <span class="error"><?php echo $title_err;?></span>
+                        <div class="control-group">
+                            <label class="control-label">Gambar Masakan :</label>
+                                <div class="control-group">
+                                    <div class="controls">
+                                        <input class="span11" value="" name="images" type="file" accept="image/*"  onchange="preview(this,'previewne')"/>
+                                    </div>
+                                </div>
                         </div>
-                        <div class="form-group <?php echo (!empty($category_err)) ? 'has-error' : ''; ?>">
-                            <label>Category</label>
-                            <input type="text" name="Category" class="form-control" value="<?php echo $category; ?>">
-                            <span class="error"><?php echo $category_err;?></span>
+                        <div class="control-group">
+                            <label class="control-label"></label>
+                            <div class="control-group">
+                                <div class="controls">
+                                    <img src="images/<?php echo $gambar_masakan;?>" id="previewne" class="rounded border p-1" style="width:110px; height:70px;">
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group <?php echo (!empty($price_err)) ? 'has-error' : ''; ?>">
-                            <label>Price</label>
-                            <input type="text" name="Price" class="form-control" value="<?php echo $price; ?>">
-                            <span class="error"><?php echo $price_err;?></span>
+                        <div class="form-actions">
+                        <?php
+                            if(isset($_SESSION['edit_menu'])){
+                        ?>
+                            <button type="submit" name="ubah_menu" class="btn btn-info"><i class='icon icon-save'></i>&nbsp; Simpan Perubahan</button>
+                        <?php
+                            } else {
+                        ?>
+                        <button type="submit" name="tambah_menu" class="btn btn-success"><i class='icon icon-plus'></i>&nbsp; Tambahkan</button>
+                        <?php
+                            }
+                        ?>
+                        <button type="submit" name="batal_menu" class="btn btn-danger"><i class='icon icon-remove'></i>&nbsp; Batalkan</a>
                         </div>
-                        <div class="form-group <?php echo (!empty($description_err)) ? 'has-error' : ''; ?>">
-                            <label for="comment">Description</label>
-                            <textarea class="form-control" rows="5" id="comment" name="text"value="<?php echo $description; ?>"></textarea>
-                            <span class="error"><?php echo $description_err;?></span>
-                        </div>
-                        <input type="submit" class="btn btn-primary" value="Submit">
-                        <a href="manage_menu_adm.php" class="btn btn-danger">Cancel</a>
+                        <a href="add_menu.php" class="btn btn-danger">Cancel</a>
                     </form>
-                </div>
-            </div>      
+            </div>
+        </div>    
     </div>
 </body>
 </html>
